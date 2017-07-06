@@ -1,0 +1,56 @@
+## create a special "vector"
+makeVector<-function(x=numeric()){
+  m<-NULL
+  set<-function(y){
+  x<<-y
+  m<<-NULL
+  }
+  get<-function() x
+  setmean<-function(mean) m<<-mean
+  getmean<-function() m
+ list(set=set,get=get,
+      setmean=setmean,getmean=getmean)
+}
+## calculate the mean of this special "vector"
+cachemean<-function(x,...){
+  m<-x$getmean()
+  if(!is.null(m)){
+    message("getting cached data")
+    return(m)
+  }
+  data<-x$get()
+  m<-mean(data,...)
+  x$setmean(m)
+  m
+}
+## crreate a special "matrix"
+makeCacheMatrix<-function(x=matrix()){
+  inv<-NULL
+  set<-function(y){
+    x<<-y
+    inv<<-NULL
+  }
+  get<-function() {
+    x
+    }
+  setinverse<-function(inverse) inv<<-inverse
+  getinverse<-function() {
+    inv
+  }
+list(set=set,get=get,
+       setinverse=setinverse,
+       getinverse=getinverse)
+
+}
+## calculate the mean of this special "vector"
+cacheSolve<-function(x,...){
+  inv<-makeCacheMatrix(x)$getinverse()
+  if(!is.null(inv)){
+    message("getting cached data")
+    return(inv)
+  }
+  data<-makeCacheMatrix(x)$get()
+  inv<-solve(data)
+  makeCacheMatrix(x)$setinverse(inv)
+  inv
+}
